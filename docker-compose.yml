@@ -1,0 +1,10 @@
+services:
+  api:
+    tty: true
+    build: .
+    # command: go run src/cmd/main.go
+    volumes:
+      - .:/go
+
+  db:
+    image: mongo:6.0.5
