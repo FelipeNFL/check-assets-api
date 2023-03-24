@@ -26,6 +26,13 @@ func (m MongoAssetRepository) GetLastPosition() (int, error) {
 	return lastAssetOfList.Order, nil
 }
 
+func (m MongoAssetRepository) CheckIfAssetExists(code string) (bool, error) {
+	asset := entities.Asset{}
+	m.collection.FindOne(nil, bson.D{{Key: "code", Value: code}}).Decode(&asset)
+
+	return asset.Code != "", nil
+}
+
 func NewAssetRepository(database mongo.Database) MongoAssetRepository {
 	return MongoAssetRepository{
 		collection: database.Collection(COLLECTION_NAME),

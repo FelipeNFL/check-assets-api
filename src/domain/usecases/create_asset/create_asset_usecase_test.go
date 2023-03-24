@@ -10,6 +10,9 @@ import (
 func TestCreateAssetUseCase(t *testing.T) {
 	assetRepository := mocks.NewMockAssetRepository()
 	createAssetUseCase := NewCreateAssetUseCase(assetRepository)
-	error := createAssetUseCase.Create("code")
+	asset, error := createAssetUseCase.Create("code")
+
 	assert.Equal(t, nil, error)
+	assert.Equal(t, "code", asset.Code)
+	assert.Equal(t, 1, asset.Order)
 }

@@ -14,6 +14,16 @@ func NewCreateAssetUseCase(assetRepository repositories.AssetRepository) CreateA
 }
 
 func (c CreateAssetUseCase) Create(code string) (entities.Asset, error) {
+	isAssetAlreadyCreated, err := c.AssetRepository.CheckIfAssetExists(code)
+
+	if err != nil {
+		return entities.Asset{}, err
+	}
+
+	if isAssetAlreadyCreated {
+		return entities.Asset{}, ErrAssetAlreadyCreated{}
+	}
+
 	lastPosition, err := c.AssetRepository.GetLastPosition()
 
 	if err != nil {
