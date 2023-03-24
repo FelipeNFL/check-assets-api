@@ -1,1 +1,1 @@
-docker-compose up --build -d && docker-compose exec api bash -c 'cd src && go test -v ./...'
+docker-compose up --build -d && docker-compose exec api bash -c 'go test -v ./...'

@@ -5,7 +5,9 @@ import (
 )
 
 type MockAssetRepository struct {
-	InsertFunc func(asset entities.Asset) (entities.Asset, error)
+	InsertFunc             func(asset entities.Asset) (entities.Asset, error)
+	GetLastPositionFunc    func() (int, error)
+	CheckIfAssetExistsFunc func(code string) (bool, error)
 }
 
 func (m MockAssetRepository) Insert(asset entities.Asset) (entities.Asset, error) {
@@ -13,17 +15,23 @@ func (m MockAssetRepository) Insert(asset entities.Asset) (entities.Asset, error
 }
 
 func (m MockAssetRepository) GetLastPosition() (int, error) {
-	return 0, nil
+	return m.GetLastPositionFunc()
 }
 
 func (m MockAssetRepository) CheckIfAssetExists(code string) (bool, error) {
-	return false, nil
+	return m.CheckIfAssetExistsFunc(code)
 }
 
-func NewMockAssetRepository() MockAssetRepository {
+func NewMockAssetRepository(lastPosition int, isAssetAlreadyInserted bool) MockAssetRepository {
 	return MockAssetRepository{
 		InsertFunc: func(asset entities.Asset) (entities.Asset, error) {
 			return asset, nil
+		},
+		GetLastPositionFunc: func() (int, error) {
+			return lastPosition, nil
+		},
+		CheckIfAssetExistsFunc: func(code string) (bool, error) {
+			return isAssetAlreadyInserted, nil
 		},
 	}
 }
