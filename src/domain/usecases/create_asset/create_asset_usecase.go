@@ -13,14 +13,15 @@ func NewCreateAssetUseCase(assetRepository repositories.AssetRepository) CreateA
 	return CreateAssetUseCase{AssetRepository: assetRepository}
 }
 
-func (c CreateAssetUseCase) Create(code string, userID int) error {
-	lastPosition, error := c.AssetRepository.GetLastPosition()
+func (c CreateAssetUseCase) Create(code string) (entities.Asset, error) {
+	lastPosition, err := c.AssetRepository.GetLastPosition()
 
-	if error != nil {
-		return error
+	if err != nil {
+		return entities.Asset{}, err
 	}
 
 	order := lastPosition + 1
-	asset := entities.NewAsset(code, order, userID)
+	asset := entities.NewAsset(code, order)
+
 	return c.AssetRepository.Insert(asset)
 }

@@ -2,9 +2,16 @@ services:
   api:
     tty: true
     build: .
-    # command: go run src/cmd/main.go
+    command: go run main.go
+    environment:
+      - DATABASE_URL=mongodb://db:27017
+      - PORT=8080
+    ports:
+      - "8080:8080"
     volumes:
       - .:/go
 
   db:
     image: mongo:6.0.5
+    ports:
+      - "27017:27017"

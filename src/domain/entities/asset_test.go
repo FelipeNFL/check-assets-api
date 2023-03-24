@@ -7,9 +7,8 @@ import (
 )
 
 func TestAsset(t *testing.T) {
-	userID := 123
 	order := 1
-	asset := NewAsset("code", order, userID)
+	asset := NewAsset("code", order)
 	assert.Equal(t, "code", asset.Code)
 	assert.Equal(t, 1, asset.Order)
 }

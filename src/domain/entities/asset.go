@@ -1,11 +1,10 @@
 package entities
 
 type Asset struct {
-	Code   string
-	Order  int
-	UserID int
+	Code  string `json:"code"`
+	Order int    `json:"order"`
 }
 
-func NewAsset(code string, order int, userID int) Asset {
-	return Asset{Code: code, Order: order, UserID: userID}
+func NewAsset(code string, order int) Asset {
+	return Asset{Code: code, Order: order}
 }
