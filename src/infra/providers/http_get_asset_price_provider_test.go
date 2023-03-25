@@ -18,10 +18,10 @@ func TestGetInfo(t *testing.T) {
 			},
 		)
 
-		httpGetAssetInfoProviderData := NewGetInfoProviderData{
+		httpGetAssetInfoProviderData := NewAssetInfoData{
 			HttpClient: httpClient,
 		}
-		httpGetAssetInfoProvider := NewGetInfoProvider(httpGetAssetInfoProviderData)
+		httpGetAssetInfoProvider := NewAssetInfo(httpGetAssetInfoProviderData)
 
 		price, err := httpGetAssetInfoProvider.GetInfo(assetCode)
 

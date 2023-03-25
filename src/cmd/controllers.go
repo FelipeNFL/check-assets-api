@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -24,6 +26,8 @@ func CreateNewAssetController(database *mongo.Database) gin.HandlerFunc {
 
 		c.BindJSON(&asset)
 
+		asset.Code = strings.ToUpper(asset.Code)
+
 		usecase := NewCreateAssetUseCase(database)
 		assetInserted, err := usecase.Create(asset.Code)
 
@@ -37,4 +41,13 @@ func GetAllAssetsController(database *mongo.Database) gin.HandlerFunc {
 		assets, err := usecase.Get()
 		returnJSON(c, err, assets)
 	}
+}
+
+func GetAssetPrice(c *gin.Context) {
+	code := strings.ToUpper(c.Param("code"))
+
+	usecase := NewConsultAssetPriceUseCase()
+	price, err := usecase.Get(code)
+
+	returnJSON(c, err, gin.H{"price": price})
 }

@@ -22,11 +22,11 @@ func TestGetAssetListUsecase(t *testing.T) {
 			AssetList: assetListInput,
 		})
 
-		getAssetProvider := mocks.NewMockGetAssetInfoProvider(price)
+		getAssetInfoProvider := mocks.NewMockAssetInfoProvider(price)
 
 		getAssetListUseCase := NewGetAssetListUseCase(NewGetAssetListUseCaseData{
 			AssetRepository:      assetRepository,
-			GetAssetInfoProvider: getAssetProvider,
+			GetAssetInfoProvider: getAssetInfoProvider,
 		})
 
 		assetList, err := getAssetListUseCase.Get()

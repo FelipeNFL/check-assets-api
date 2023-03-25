@@ -4,6 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/FelipeNFL/check-assets-api/adapters"
+	"github.com/FelipeNFL/check-assets-api/domain/usecases/consult_asset_price"
 	"github.com/FelipeNFL/check-assets-api/domain/usecases/create_asset"
 	"github.com/FelipeNFL/check-assets-api/domain/usecases/get_asset_list"
 	"github.com/FelipeNFL/check-assets-api/infra/providers"
@@ -12,8 +13,8 @@ import (
 
 func getPricesProvider() providers.HttpGetAssetInfoProvider {
 	httpClient := adapters.NewHttpClient()
-	getPricesDataProvider := providers.NewGetInfoProviderData{HttpClient: httpClient}
-	return providers.NewGetInfoProvider(getPricesDataProvider)
+	getPricesDataProvider := providers.NewAssetInfoData{HttpClient: httpClient}
+	return providers.NewAssetInfo(getPricesDataProvider)
 }
 
 func NewGetAssetListUseCase(database *mongo.Database) get_asset_list.GetAssetListUseCase {
@@ -22,9 +23,8 @@ func NewGetAssetListUseCase(database *mongo.Database) get_asset_list.GetAssetLis
 		AssetRepository:      repository,
 		GetAssetInfoProvider: getPricesProvider(),
 	}
-	usecase := get_asset_list.NewGetAssetListUseCase(useCaseData)
 
-	return usecase
+	return get_asset_list.NewGetAssetListUseCase(useCaseData)
 }
 
 func NewCreateAssetUseCase(database *mongo.Database) create_asset.CreateAssetUseCase {
@@ -33,7 +33,14 @@ func NewCreateAssetUseCase(database *mongo.Database) create_asset.CreateAssetUse
 		AssetRepository:      repository,
 		GetAssetInfoProvider: getPricesProvider(),
 	}
-	usecase := create_asset.NewCreateAssetUseCase(useCaseData)
 
-	return usecase
+	return create_asset.NewCreateAssetUseCase(useCaseData)
+}
+
+func NewConsultAssetPriceUseCase() consult_asset_price.ConsultAssetPriceUseCase {
+	useCaseData := consult_asset_price.NewConsultAssetPriceUseCaseData{
+		GetAssetInfoProvider: getPricesProvider(),
+	}
+
+	return consult_asset_price.NewConsultAssetPriceUseCase(useCaseData)
 }

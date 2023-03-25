@@ -16,5 +16,6 @@ func main() {
 	r.GET("/health", cmd.HealthCheckController)
 	r.POST("/asset", cmd.CreateNewAssetController(database))
 	r.GET("/asset", cmd.GetAllAssetsController(database))
+	r.GET("/asset/:code/price", cmd.GetAssetPrice)
 	r.Run()
 }

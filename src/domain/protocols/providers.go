@@ -1,9 +1,9 @@
 package protocols
 
-type GetInfoProviderResult struct {
+type AssetInfoResult struct {
 	Price float64
 }
 
 type GetAssetInfoProvider interface {
-	GetInfo(code string) (GetInfoProviderResult, error)
+	GetInfo(code string) (AssetInfoResult, error)
 }

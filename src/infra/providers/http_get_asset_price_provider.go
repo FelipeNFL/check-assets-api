@@ -23,17 +23,17 @@ type YahooFinanceSchema struct {
 	} `json:"quoteResponse"`
 }
 
-type NewGetInfoProviderData struct {
+type NewAssetInfoData struct {
 	HttpClient adapters.HttpClient
 }
 
-func NewGetInfoProvider(data NewGetInfoProviderData) HttpGetAssetInfoProvider {
+func NewAssetInfo(data NewAssetInfoData) HttpGetAssetInfoProvider {
 	return HttpGetAssetInfoProvider{
 		HttpClient: data.HttpClient,
 	}
 }
 
-func (p HttpGetAssetInfoProvider) GetInfo(code string) (protocols.GetInfoProviderResult, error) {
+func (p HttpGetAssetInfoProvider) GetInfo(code string) (protocols.AssetInfoResult, error) {
 	url := "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=" + code
 	apiKey := commom.GetEnvironmentVariable("YAHOO_FINANCE_API_KEY")
 	headers := map[string]string{"X-API-KEY": apiKey}
@@ -41,7 +41,7 @@ func (p HttpGetAssetInfoProvider) GetInfo(code string) (protocols.GetInfoProvide
 	body, err := p.HttpClient.Get(url, headers)
 	if err != nil {
 		log.Error("Error getting price for asset: ", code, " - ", err)
-		return protocols.GetInfoProviderResult{}, infra.ErrGetAssetPrice
+		return protocols.AssetInfoResult{}, infra.ErrGetAssetPrice
 	}
 
 	parsed := YahooFinanceSchema{}
@@ -50,10 +50,10 @@ func (p HttpGetAssetInfoProvider) GetInfo(code string) (protocols.GetInfoProvide
 
 	if len(parsed.QuoteResponse.Result) == 0 {
 		log.Error("Error getting price for asset: ", code, ". Asset code is invalid.")
-		return protocols.GetInfoProviderResult{}, infra.ErrAssetNotFound
+		return protocols.AssetInfoResult{}, infra.ErrAssetNotFound
 	}
 
-	result := protocols.GetInfoProviderResult{
+	result := protocols.AssetInfoResult{
 		Price: parsed.QuoteResponse.Result[0].RegularMarketPrice,
 	}
 
