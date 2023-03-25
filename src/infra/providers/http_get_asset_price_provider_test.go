@@ -18,12 +18,12 @@ func TestGetInfo(t *testing.T) {
 			},
 		)
 
-		httpGetAssetInfoProviderData := NewAssetInfoData{
+		httpAssetInfoProviderData := NewAssetInfoData{
 			HttpClient: httpClient,
 		}
-		httpGetAssetInfoProvider := NewAssetInfo(httpGetAssetInfoProviderData)
+		httpAssetInfoProvider := NewAssetInfo(httpAssetInfoProviderData)
 
-		price, err := httpGetAssetInfoProvider.GetInfo(assetCode)
+		price, err := httpAssetInfoProvider.GetInfo(assetCode)
 
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)

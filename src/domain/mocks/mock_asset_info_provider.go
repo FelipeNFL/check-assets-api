@@ -10,7 +10,7 @@ func (m MockAssetInfoProvider) GetInfo(code string) (protocols.AssetInfoResult, 
 	return m.GetInfoFunc(code)
 }
 
-func NewMockAssetInfoProvider(price float64) protocols.GetAssetInfoProvider {
+func NewMockAssetInfoProvider(price float64) protocols.AssetInfoProvider {
 	return &MockAssetInfoProvider{
 		GetInfoFunc: func(code string) (protocols.AssetInfoResult, error) {
 			return protocols.AssetInfoResult{Price: price}, nil

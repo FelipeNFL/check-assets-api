@@ -4,6 +4,6 @@ type AssetInfoResult struct {
 	Price float64
 }
 
-type GetAssetInfoProvider interface {
+type AssetInfoProvider interface {
 	GetInfo(code string) (AssetInfoResult, error)
 }

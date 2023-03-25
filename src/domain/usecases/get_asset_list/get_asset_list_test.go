@@ -25,8 +25,8 @@ func TestGetAssetListUsecase(t *testing.T) {
 		getAssetInfoProvider := mocks.NewMockAssetInfoProvider(price)
 
 		getAssetListUseCase := NewGetAssetListUseCase(NewGetAssetListUseCaseData{
-			AssetRepository:      assetRepository,
-			GetAssetInfoProvider: getAssetInfoProvider,
+			AssetRepository:   assetRepository,
+			AssetInfoProvider: getAssetInfoProvider,
 		})
 
 		assetList, err := getAssetListUseCase.Get()

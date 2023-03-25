@@ -19,7 +19,8 @@ func TestCreateAssetUseCase(t *testing.T) {
 			},
 		)
 		createAssetUseCaseData := NewCreateAssetUseCaseData{
-			AssetRepository: assetRepository,
+			AssetRepository:   assetRepository,
+			AssetInfoProvider: mocks.NewMockAssetInfoProvider(10.0),
 		}
 
 		createAssetUseCase := NewCreateAssetUseCase(createAssetUseCaseData)

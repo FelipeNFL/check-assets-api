@@ -13,9 +13,13 @@ func main() {
 	database := commom.GetMongoDatabase(DATABASE_NAME)
 
 	r := gin.Default()
+
 	r.GET("/health", cmd.HealthCheckController)
-	r.POST("/asset", cmd.CreateNewAssetController(database))
 	r.GET("/asset", cmd.GetAllAssetsController(database))
-	r.GET("/asset/:code/price", cmd.GetAssetPrice)
+	r.GET("/asset/:code/price", cmd.GetAssetPriceController)
+
+	r.POST("/asset", cmd.CreateNewAssetController(database))
+	r.POST("/asset/ordination", cmd.SaveAssetOrdinationController(database))
+
 	r.Run()
 }

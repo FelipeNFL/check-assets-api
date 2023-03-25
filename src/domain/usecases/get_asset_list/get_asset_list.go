@@ -9,20 +9,20 @@ import (
 )
 
 type GetAssetListUseCase struct {
-	AssetRepository      repositories.AssetRepository
-	GetAssetInfoProvider providers.GetAssetInfoProvider
-	GetFunc              func() ([]entities.Asset, error)
+	AssetRepository   repositories.AssetRepository
+	AssetInfoProvider providers.AssetInfoProvider
+	GetFunc           func() ([]entities.Asset, error)
 }
 
 type NewGetAssetListUseCaseData struct {
-	AssetRepository      repositories.AssetRepository
-	GetAssetInfoProvider providers.GetAssetInfoProvider
+	AssetRepository   repositories.AssetRepository
+	AssetInfoProvider providers.AssetInfoProvider
 }
 
 func NewGetAssetListUseCase(data NewGetAssetListUseCaseData) GetAssetListUseCase {
 	return GetAssetListUseCase{
-		AssetRepository:      data.AssetRepository,
-		GetAssetInfoProvider: data.GetAssetInfoProvider,
+		AssetRepository:   data.AssetRepository,
+		AssetInfoProvider: data.AssetInfoProvider,
 	}
 }
 
@@ -34,7 +34,7 @@ func (g GetAssetListUseCase) Get() ([]entities.Asset, error) {
 	}
 
 	for i, asset := range assets {
-		assetInfo, err := g.GetAssetInfoProvider.GetInfo(asset.Code)
+		assetInfo, err := g.AssetInfoProvider.GetInfo(asset.Code)
 
 		if err != nil {
 			log.Fatal("Error getting price for asset: ", asset.Code, " - ", err)

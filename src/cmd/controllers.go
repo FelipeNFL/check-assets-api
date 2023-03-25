@@ -43,11 +43,24 @@ func GetAllAssetsController(database *mongo.Database) gin.HandlerFunc {
 	}
 }
 
-func GetAssetPrice(c *gin.Context) {
+func GetAssetPriceController(c *gin.Context) {
 	code := strings.ToUpper(c.Param("code"))
 
 	usecase := NewConsultAssetPriceUseCase()
 	price, err := usecase.Get(code)
 
 	returnJSON(c, err, gin.H{"price": price})
+}
+
+func SaveAssetOrdinationController(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		body := SaveAssetOrdinationDTO{}
+
+		c.BindJSON(&body)
+
+		usecase := NewSaveAssetOrdinationUseCase(database)
+		saved, err := usecase.Save(body.Ordination)
+
+		returnJSON(c, err, saved)
+	}
 }

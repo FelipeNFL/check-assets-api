@@ -7,20 +7,20 @@ import (
 )
 
 type CreateAssetUseCase struct {
-	AssetRepository      protocols.AssetRepository
-	GetAssetInfoProvider protocols.GetAssetInfoProvider
-	CreateFunc           func(code string) (entities.Asset, error)
+	AssetRepository   protocols.AssetRepository
+	AssetInfoProvider protocols.AssetInfoProvider
+	CreateFunc        func(code string) (entities.Asset, error)
 }
 
 type NewCreateAssetUseCaseData struct {
-	AssetRepository      protocols.AssetRepository
-	GetAssetInfoProvider protocols.GetAssetInfoProvider
+	AssetRepository   protocols.AssetRepository
+	AssetInfoProvider protocols.AssetInfoProvider
 }
 
 func NewCreateAssetUseCase(data NewCreateAssetUseCaseData) CreateAssetUseCase {
 	return CreateAssetUseCase{
-		AssetRepository:      data.AssetRepository,
-		GetAssetInfoProvider: data.GetAssetInfoProvider,
+		AssetRepository:   data.AssetRepository,
+		AssetInfoProvider: data.AssetInfoProvider,
 	}
 }
 
@@ -35,7 +35,7 @@ func (c CreateAssetUseCase) validateAsset(code string) error {
 		return usecases.ErrAssetAlreadyCreated
 	}
 
-	_, getAssetInfoProviderError := c.GetAssetInfoProvider.GetInfo(code)
+	_, getAssetInfoProviderError := c.AssetInfoProvider.GetInfo(code)
 
 	if getAssetInfoProviderError != nil {
 		return getAssetInfoProviderError
@@ -58,7 +58,11 @@ func (c CreateAssetUseCase) Create(code string) (entities.Asset, error) {
 	}
 
 	order := lastPosition + 1
-	asset := entities.NewAsset(code, order)
+	asset, err := entities.NewAsset(code, order)
+
+	if err != nil {
+		return entities.Asset{}, err
+	}
 
 	return c.AssetRepository.Insert(asset)
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/FelipeNFL/check-assets-api/infra"
 )
 
-type HttpGetAssetInfoProvider struct {
+type HttpAssetInfoProvider struct {
 	HttpClient adapters.HttpClient
 }
 
@@ -27,13 +27,13 @@ type NewAssetInfoData struct {
 	HttpClient adapters.HttpClient
 }
 
-func NewAssetInfo(data NewAssetInfoData) HttpGetAssetInfoProvider {
-	return HttpGetAssetInfoProvider{
+func NewAssetInfo(data NewAssetInfoData) HttpAssetInfoProvider {
+	return HttpAssetInfoProvider{
 		HttpClient: data.HttpClient,
 	}
 }
 
-func (p HttpGetAssetInfoProvider) GetInfo(code string) (protocols.AssetInfoResult, error) {
+func (p HttpAssetInfoProvider) GetInfo(code string) (protocols.AssetInfoResult, error) {
 	url := "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=" + code
 	apiKey := commom.GetEnvironmentVariable("YAHOO_FINANCE_API_KEY")
 	headers := map[string]string{"X-API-KEY": apiKey}

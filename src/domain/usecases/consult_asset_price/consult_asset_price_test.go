@@ -13,7 +13,7 @@ func TestNewConsultAssetPrice(t *testing.T) {
 		assetInfoProvider := mocks.NewMockAssetInfoProvider(10.0)
 		consultAssetPriceUseCase := NewConsultAssetPriceUseCase(
 			NewConsultAssetPriceUseCaseData{
-				GetAssetInfoProvider: assetInfoProvider,
+				AssetInfoProvider: assetInfoProvider,
 			},
 		)
 
@@ -25,7 +25,7 @@ func TestNewConsultAssetPrice(t *testing.T) {
 		assetInfoProvider := mocks.NewMockAssetInfoProvider(price)
 		consultAssetPriceUseCase := NewConsultAssetPriceUseCase(
 			NewConsultAssetPriceUseCaseData{
-				GetAssetInfoProvider: assetInfoProvider,
+				AssetInfoProvider: assetInfoProvider,
 			},
 		)
 

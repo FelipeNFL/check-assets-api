@@ -8,3 +8,9 @@ type AssetRepository interface {
 	GetLastPosition() (int, error)
 	GetAll() ([]entities.Asset, error)
 }
+
+type AssetOrdinationRepository interface {
+	Clean() error
+	Insert(assetOrdination entities.AssetOrdination) (entities.AssetOrdination, error)
+	Get() (entities.AssetOrdination, error)
+}

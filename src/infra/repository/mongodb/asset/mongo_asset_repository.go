@@ -1,36 +1,24 @@
-package mongodb
+package asset
 
 import (
-	"context"
 	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/FelipeNFL/check-assets-api/domain/entities"
+	"github.com/FelipeNFL/check-assets-api/infra/repository/mongodb"
 )
 
-const COLLECTION_NAME = "assets"
-const DEFAULT_TIMEOUT = 10
+const COLLECTION_NAME = "asset"
 
 type MongoAssetRepository struct {
 	collection *mongo.Collection
 }
 
-func (m MongoAssetRepository) getContext(timeout_optional ...int) (context.Context, context.CancelFunc) {
-	timeout := DEFAULT_TIMEOUT
-
-	if len(timeout_optional) > 0 {
-		timeout = timeout_optional[0]
-	}
-
-	return context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
-}
-
 func (m MongoAssetRepository) Insert(asset entities.Asset) (entities.Asset, error) {
-	ctx, cancel := m.getContext()
+	ctx, cancel := mongodb.GetContext()
 	defer cancel()
 
 	_, err := m.collection.InsertOne(ctx, asset)
@@ -39,7 +27,7 @@ func (m MongoAssetRepository) Insert(asset entities.Asset) (entities.Asset, erro
 }
 
 func (m MongoAssetRepository) GetLastPosition() (int, error) {
-	ctx, cancel := m.getContext()
+	ctx, cancel := mongodb.GetContext()
 	defer cancel()
 
 	lastAssetOfList := entities.Asset{}
@@ -50,7 +38,7 @@ func (m MongoAssetRepository) GetLastPosition() (int, error) {
 }
 
 func (m MongoAssetRepository) CheckIfAssetExists(code string) (bool, error) {
-	ctx, cancel := m.getContext()
+	ctx, cancel := mongodb.GetContext()
 	defer cancel()
 
 	asset := entities.Asset{}
@@ -60,7 +48,7 @@ func (m MongoAssetRepository) CheckIfAssetExists(code string) (bool, error) {
 }
 
 func (m MongoAssetRepository) GetAll() ([]entities.Asset, error) {
-	ctx, cancel := m.getContext()
+	ctx, cancel := mongodb.GetContext()
 	defer cancel()
 
 	cursor, err := m.collection.Find(ctx, bson.D{{}})
