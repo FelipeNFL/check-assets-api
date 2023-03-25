@@ -7,6 +7,7 @@ type AssetRepository interface {
 	CheckIfAssetExists(code string) (bool, error)
 	GetLastPosition() (int, error)
 	GetAll() ([]entities.Asset, error)
+	UpdateAssetOrder(code string, newOrder int) error
 }
 
 type AssetOrdinationRepository interface {

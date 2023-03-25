@@ -5,5 +5,6 @@ type CreateNewAssetDTO struct {
 }
 
 type SaveAssetOrdinationDTO struct {
-	Ordination string `json:"ordination"`
+	Ordination  string   `json:"ordination"`
+	CustomOrder []string `json:"custom_order,omitempty"`
 }

@@ -38,7 +38,9 @@ func CreateNewAssetController(database *mongo.Database) gin.HandlerFunc {
 func GetAllAssetsController(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		usecase := NewGetAssetListUseCase(database)
-		assets, err := usecase.Get()
+
+		order := strings.ToLower(c.Query("order"))
+		assets, err := usecase.Get(order)
 		returnJSON(c, err, assets)
 	}
 }
@@ -59,8 +61,7 @@ func SaveAssetOrdinationController(database *mongo.Database) gin.HandlerFunc {
 		c.BindJSON(&body)
 
 		usecase := NewSaveAssetOrdinationUseCase(database)
-		saved, err := usecase.Save(body.Ordination)
-
+		saved, err := usecase.Save(body.Ordination, body.CustomOrder)
 		returnJSON(c, err, saved)
 	}
 }

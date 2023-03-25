@@ -66,6 +66,19 @@ func (m MongoAssetRepository) GetAll() ([]entities.Asset, error) {
 	return assets, nil
 }
 
+func (m MongoAssetRepository) UpdateAssetOrder(code string, newOrder int) error {
+	ctx, cancel := mongodb.GetContext()
+	defer cancel()
+
+	_, err := m.collection.UpdateOne(
+		ctx,
+		bson.D{{Key: "code", Value: code}},
+		bson.D{{Key: "$set", Value: bson.D{{Key: "order", Value: newOrder}}}},
+	)
+
+	return err
+}
+
 func NewAssetRepository(database mongo.Database) MongoAssetRepository {
 	return MongoAssetRepository{
 		collection: database.Collection(COLLECTION_NAME),
