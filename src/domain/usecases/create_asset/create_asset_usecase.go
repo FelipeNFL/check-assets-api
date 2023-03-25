@@ -1,16 +1,22 @@
-package usecases
+package create_asset
 
 import (
 	"github.com/FelipeNFL/check-assets-api/domain/entities"
 	repositories "github.com/FelipeNFL/check-assets-api/domain/protocols"
+	"github.com/FelipeNFL/check-assets-api/domain/usecases"
 )
 
 type CreateAssetUseCase struct {
 	AssetRepository repositories.AssetRepository
+	CreateFunc      func(code string) (entities.Asset, error)
 }
 
-func NewCreateAssetUseCase(assetRepository repositories.AssetRepository) CreateAssetUseCase {
-	return CreateAssetUseCase{AssetRepository: assetRepository}
+type NewCreateAssetUseCaseData struct {
+	AssetRepository repositories.AssetRepository
+}
+
+func NewCreateAssetUseCase(data NewCreateAssetUseCaseData) CreateAssetUseCase {
+	return CreateAssetUseCase{AssetRepository: data.AssetRepository}
 }
 
 func (c CreateAssetUseCase) Create(code string) (entities.Asset, error) {
@@ -21,7 +27,7 @@ func (c CreateAssetUseCase) Create(code string) (entities.Asset, error) {
 	}
 
 	if isAssetAlreadyCreated {
-		return entities.Asset{}, ErrAssetAlreadyCreated{}
+		return entities.Asset{}, usecases.ErrAssetAlreadyCreated{}
 	}
 
 	lastPosition, err := c.AssetRepository.GetLastPosition()

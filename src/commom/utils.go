@@ -1,4 +1,4 @@
-package cmd
+package commom
 
 import (
 	"context"
@@ -9,12 +9,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func getEnvironmentVariable(key string) string {
+func GetEnvironmentVariable(key string) string {
 	return os.Getenv(key)
 }
 
 func GetMongoDatabase(databaseName string) *mongo.Database {
-	databaseURL := getEnvironmentVariable("DATABASE_URL")
+	databaseURL := GetEnvironmentVariable("DATABASE_URL")
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(databaseURL))
 	if err != nil {

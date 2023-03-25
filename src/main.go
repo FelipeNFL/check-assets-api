@@ -1,17 +1,20 @@
 package main
 
 import (
-	"github.com/FelipeNFL/check-assets-api/cmd"
 	"github.com/gin-gonic/gin"
+
+	"github.com/FelipeNFL/check-assets-api/cmd"
+	"github.com/FelipeNFL/check-assets-api/commom"
 )
 
-func main() {
-	DATABASE_NAME := "api"
+const DATABASE_NAME = "api"
 
-	database := cmd.GetMongoDatabase(DATABASE_NAME)
+func main() {
+	database := commom.GetMongoDatabase(DATABASE_NAME)
 
 	r := gin.Default()
 	r.GET("/health", cmd.HealthCheckController)
 	r.POST("/asset", cmd.CreateNewAssetController(database))
+	r.GET("/asset", cmd.GetAllAssetsController(database))
 	r.Run()
 }

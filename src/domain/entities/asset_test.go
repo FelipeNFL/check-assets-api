@@ -7,8 +7,10 @@ import (
 )
 
 func TestAsset(t *testing.T) {
-	order := 1
-	asset := NewAsset("code", order)
-	assert.Equal(t, "code", asset.Code)
-	assert.Equal(t, 1, asset.Order)
+	t.Run("should create a new asset correctly", func(t *testing.T) {
+		order := 1
+		asset := NewAsset("code", order)
+		assert.Equal(t, "code", asset.Code)
+		assert.Equal(t, 1, asset.Order)
+	})
 }

@@ -6,6 +6,7 @@ services:
     environment:
       - DATABASE_URL=mongodb://db:27017
       - PORT=8080
+      - YAHOO_FINANCE_API_KEY=nFTRr5SlMs1t1SAoX3vy88PvwuohGnyVaXoKU3ll
     ports:
       - "8080:8080"
     volumes:

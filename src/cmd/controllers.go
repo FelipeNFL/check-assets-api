@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	usecases "github.com/FelipeNFL/check-assets-api/domain/usecases/create_asset"
-	repository "github.com/FelipeNFL/check-assets-api/infra/repository/mongodb"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -23,12 +21,20 @@ func HealthCheckController(c *gin.Context) {
 func CreateNewAssetController(database *mongo.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		asset := CreateNewAssetDTO{}
+
 		c.BindJSON(&asset)
 
-		repository := repository.NewAssetRepository(*database)
-		usecase := usecases.NewCreateAssetUseCase(repository)
+		usecase := NewCreateAssetUseCase(database)
 		assetInserted, err := usecase.Create(asset.Code)
 
 		returnJSON(c, err, assetInserted)
+	}
+}
+
+func GetAllAssetsController(database *mongo.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		usecase := NewGetAssetListUseCase(database)
+		assets, err := usecase.Get()
+		returnJSON(c, err, assets)
 	}
 }

@@ -8,6 +8,7 @@ type MockAssetRepository struct {
 	InsertFunc             func(asset entities.Asset) (entities.Asset, error)
 	GetLastPositionFunc    func() (int, error)
 	CheckIfAssetExistsFunc func(code string) (bool, error)
+	GetAllFunc             func() ([]entities.Asset, error)
 }
 
 func (m MockAssetRepository) Insert(asset entities.Asset) (entities.Asset, error) {
@@ -22,16 +23,29 @@ func (m MockAssetRepository) CheckIfAssetExists(code string) (bool, error) {
 	return m.CheckIfAssetExistsFunc(code)
 }
 
-func NewMockAssetRepository(lastPosition int, isAssetAlreadyInserted bool) MockAssetRepository {
+func (m MockAssetRepository) GetAll() ([]entities.Asset, error) {
+	return m.GetAllFunc()
+}
+
+type NewMockAssetRepositoryData struct {
+	LastPosition           int
+	IsAssetAlreadyInserted bool
+	AssetList              []entities.Asset
+}
+
+func NewMockAssetRepository(data NewMockAssetRepositoryData) MockAssetRepository {
 	return MockAssetRepository{
 		InsertFunc: func(asset entities.Asset) (entities.Asset, error) {
 			return asset, nil
 		},
 		GetLastPositionFunc: func() (int, error) {
-			return lastPosition, nil
+			return data.LastPosition, nil
 		},
 		CheckIfAssetExistsFunc: func(code string) (bool, error) {
-			return isAssetAlreadyInserted, nil
+			return data.IsAssetAlreadyInserted, nil
+		},
+		GetAllFunc: func() ([]entities.Asset, error) {
+			return data.AssetList, nil
 		},
 	}
 }
