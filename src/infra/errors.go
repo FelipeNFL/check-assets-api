@@ -1,17 +1,6 @@
 package infra
 
-type ErrGetAssetPrice struct {
-	Err error
-}
+import "errors"
 
-func (e ErrGetAssetPrice) Error() string {
-	return "error to get asset price"
-}
-
-type ErrAssetNotFound struct {
-	Err error
-}
-
-func (e ErrAssetNotFound) Error() string {
-	return "asset not found"
-}
+var ErrGetAssetPrice = errors.New("error to get asset price")
+var ErrAssetNotFound = errors.New("asset not found")

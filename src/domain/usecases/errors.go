@@ -1,7 +1,6 @@
 package usecases
 
-type ErrAssetAlreadyCreated struct{}
+import "errors"
 
-func (e ErrAssetAlreadyCreated) Error() string {
-	return "asset already created"
-}
+var ErrAssetAlreadyCreated = errors.New("asset already created")
+var ErrAssetInvalid = errors.New("asset invalid")

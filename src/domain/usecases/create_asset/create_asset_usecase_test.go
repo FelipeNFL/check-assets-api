@@ -23,9 +23,9 @@ func TestCreateAssetUseCase(t *testing.T) {
 		}
 
 		createAssetUseCase := NewCreateAssetUseCase(createAssetUseCaseData)
-		asset, error := createAssetUseCase.Create("code")
+		asset, err := createAssetUseCase.Create("code")
 
-		assert.Equal(t, nil, error)
+		assert.Equal(t, nil, err)
 		assert.Equal(t, "code", asset.Code)
 		assert.Equal(t, lastPosition+1, asset.Order)
 	})
@@ -41,8 +41,8 @@ func TestCreateAssetUseCase(t *testing.T) {
 		}
 
 		createAssetUseCase := NewCreateAssetUseCase(createAssetUseCaseData)
-		_, error := createAssetUseCase.Create("code")
+		_, err := createAssetUseCase.Create("code")
 
-		assert.Equal(t, usecases.ErrAssetAlreadyCreated{}, error)
+		assert.Equal(t, usecases.ErrAssetAlreadyCreated, err)
 	})
 }

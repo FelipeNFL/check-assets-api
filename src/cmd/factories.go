@@ -10,15 +10,17 @@ import (
 	"github.com/FelipeNFL/check-assets-api/infra/repository/mongodb"
 )
 
-func NewGetAssetListUseCase(database *mongo.Database) get_asset_list.GetAssetListUseCase {
+func getPricesProvider() providers.HttpGetAssetInfoProvider {
 	httpClient := adapters.NewHttpClient()
 	getPricesDataProvider := providers.NewGetInfoProviderData{HttpClient: httpClient}
-	getPricesProvider := providers.NewGetInfoProvider(getPricesDataProvider)
+	return providers.NewGetInfoProvider(getPricesDataProvider)
+}
 
+func NewGetAssetListUseCase(database *mongo.Database) get_asset_list.GetAssetListUseCase {
 	repository := mongodb.NewAssetRepository(*database)
 	useCaseData := get_asset_list.NewGetAssetListUseCaseData{
 		AssetRepository:      repository,
-		GetAssetInfoProvider: getPricesProvider,
+		GetAssetInfoProvider: getPricesProvider(),
 	}
 	usecase := get_asset_list.NewGetAssetListUseCase(useCaseData)
 
@@ -27,7 +29,10 @@ func NewGetAssetListUseCase(database *mongo.Database) get_asset_list.GetAssetLis
 
 func NewCreateAssetUseCase(database *mongo.Database) create_asset.CreateAssetUseCase {
 	repository := mongodb.NewAssetRepository(*database)
-	useCaseData := create_asset.NewCreateAssetUseCaseData{AssetRepository: repository}
+	useCaseData := create_asset.NewCreateAssetUseCaseData{
+		AssetRepository:      repository,
+		GetAssetInfoProvider: getPricesProvider(),
+	}
 	usecase := create_asset.NewCreateAssetUseCase(useCaseData)
 
 	return usecase

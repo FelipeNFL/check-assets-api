@@ -2,7 +2,8 @@ package providers
 
 import (
 	"encoding/json"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/FelipeNFL/check-assets-api/adapters"
 	"github.com/FelipeNFL/check-assets-api/commom"
@@ -39,8 +40,8 @@ func (p HttpGetAssetInfoProvider) GetInfo(code string) (protocols.GetInfoProvide
 
 	body, err := p.HttpClient.Get(url, headers)
 	if err != nil {
-		log.Fatal("Error getting price for asset: ", code, " - ", err)
-		return protocols.GetInfoProviderResult{}, infra.ErrGetAssetPrice{}
+		log.Error("Error getting price for asset: ", code, " - ", err)
+		return protocols.GetInfoProviderResult{}, infra.ErrGetAssetPrice
 	}
 
 	parsed := YahooFinanceSchema{}
@@ -48,8 +49,8 @@ func (p HttpGetAssetInfoProvider) GetInfo(code string) (protocols.GetInfoProvide
 	json.Unmarshal(body, &parsed)
 
 	if len(parsed.QuoteResponse.Result) == 0 {
-		log.Fatal("Error getting price for asset: ", code, ". Asset is invalid.")
-		return protocols.GetInfoProviderResult{}, infra.ErrAssetNotFound{}
+		log.Error("Error getting price for asset: ", code, ". Asset code is invalid.")
+		return protocols.GetInfoProviderResult{}, infra.ErrAssetNotFound
 	}
 
 	result := protocols.GetInfoProviderResult{
