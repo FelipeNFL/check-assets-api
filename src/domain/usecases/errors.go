@@ -4,6 +4,7 @@ import "errors"
 
 var ErrAssetAlreadyCreated = errors.New("asset already created")
 var ErrAssetInvalid = errors.New("asset invalid")
+var ErrAssetCodeIsEmpty = errors.New("asset code is empty")
 
 var ErrOrdenationTypeInvalid = errors.New("ordenation type is invalid")
 var ErrThereIsAssetRepetition = errors.New("there is asset repetition")

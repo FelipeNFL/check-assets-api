@@ -3,11 +3,7 @@ package adapters
 import "fmt"
 
 type MockHttpClient struct {
-	GetFunc func(url string, headers Headers) ([]byte, error)
-}
-
-func (m MockHttpClient) Get(url string, headers Headers) ([]byte, error) {
-	return m.GetFunc(url, headers)
+	Get func(url string, headers Headers) ([]byte, error)
 }
 
 type NewMockHttpClientData struct {
@@ -16,7 +12,7 @@ type NewMockHttpClientData struct {
 
 func NewMockHttpClient(data NewMockHttpClientData) MockHttpClient {
 	return MockHttpClient{
-		GetFunc: func(url string, headers Headers) ([]byte, error) {
+		Get: func(url string, headers Headers) ([]byte, error) {
 			body := fmt.Sprintf(
 				`
 					{

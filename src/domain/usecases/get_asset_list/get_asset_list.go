@@ -41,7 +41,11 @@ func (g GetAssetListUseCase) Get(direction string) ([]entities.Asset, error) {
 	assets, err := g.AssetRepository.GetAll()
 
 	if err != nil {
-		return nil, err
+		return []entities.Asset{}, err
+	}
+
+	if len(assets) == 0 {
+		return []entities.Asset{}, nil
 	}
 
 	assetsCode := make([]string, len(assets))
@@ -53,7 +57,7 @@ func (g GetAssetListUseCase) Get(direction string) ([]entities.Asset, error) {
 	assetsInfo, err := g.AssetInfoProvider.GetInfo(assetsCode)
 	if err != nil {
 		log.Fatal("Error getting price for asset list: ", strings.Join(assetsCode, ","), " - ", err)
-		return nil, err
+		return []entities.Asset{}, err
 	}
 
 	for i, asset := range assets {
@@ -63,7 +67,7 @@ func (g GetAssetListUseCase) Get(direction string) ([]entities.Asset, error) {
 	assetOrdination, err := g.AssetOrdinationRepository.Get()
 
 	if err != nil {
-		return nil, err
+		return []entities.Asset{}, err
 	}
 
 	sort.Slice(assets, func(i, j int) bool {

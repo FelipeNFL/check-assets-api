@@ -16,7 +16,7 @@ func main() {
 
 	r.GET("/health", cmd.HealthCheckController)
 	r.GET("/asset", cmd.GetAllAssetsController(database))
-	r.GET("/asset/:code/price", cmd.GetAssetPriceController)
+	r.GET("/asset/price", cmd.GetAssetPriceController)
 
 	r.POST("/asset", cmd.CreateNewAssetController(database))
 	r.POST("/asset/ordination", cmd.SaveAssetOrdinationController(database))

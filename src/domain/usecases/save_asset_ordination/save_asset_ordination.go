@@ -12,30 +12,18 @@ type SaveAssetOrdinationUseCase struct {
 	SaveFunc                  func(assetOrdination entities.AssetOrdination) (entities.AssetOrdination, error)
 }
 
-func (s SaveAssetOrdinationUseCase) storageInDatabase(data entities.AssetOrdination, currentAssets []entities.Asset) (entities.AssetOrdination, error) {
+func (s SaveAssetOrdinationUseCase) storageInDatabase(data entities.AssetOrdination) (entities.AssetOrdination, error) {
 	if err := s.AssetOrdinationRepository.Clean(); err != nil {
 		return entities.AssetOrdination{}, err
-	}
-
-	if data.Ordination != entities.Custom {
-		return s.AssetOrdinationRepository.Insert(data)
-	}
-
-	for newOrder, asset := range currentAssets {
-		if err := s.AssetRepository.UpdateAssetOrder(asset.Code, newOrder); err != nil {
-			return data, err
-		}
 	}
 
 	return s.AssetOrdinationRepository.Insert(data)
 }
 
-func (s SaveAssetOrdinationUseCase) validateCustomOrdenation(
-	assetOrdination entities.AssetOrdination,
-	currentAssets []entities.Asset,
-) error {
-	if assetOrdination.Ordination != entities.Custom {
-		return nil
+func (s SaveAssetOrdinationUseCase) saveCustomOrder(assetOrdination entities.AssetOrdination) error {
+	currentAssets, err := s.AssetRepository.GetAll()
+	if err != nil {
+		return err
 	}
 
 	if len(currentAssets) != len(assetOrdination.CustomOrder) {
@@ -52,9 +40,9 @@ func (s SaveAssetOrdinationUseCase) validateCustomOrdenation(
 		}
 	}
 
-	customAssetsMap := make(map[string]struct{}, len(assetOrdination.CustomOrder))
+	customAssetsMap := make(map[string]int, len(assetOrdination.CustomOrder))
 
-	for _, asset := range assetOrdination.CustomOrder {
+	for order, asset := range assetOrdination.CustomOrder {
 		if _, repeated := customAssetsMap[asset]; repeated {
 			return usecases.ErrThereIsAssetRepetition
 		}
@@ -63,7 +51,15 @@ func (s SaveAssetOrdinationUseCase) validateCustomOrdenation(
 			return usecases.ErrAssetDoesntExistInDatabase
 		}
 
-		customAssetsMap[asset] = struct{}{}
+		customAssetsMap[asset] = order
+	}
+
+	for _, asset := range currentAssets {
+		newOrder := customAssetsMap[asset.Code]
+
+		if err := s.AssetRepository.UpdateAssetOrder(asset.Code, newOrder); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -76,21 +72,13 @@ func (s SaveAssetOrdinationUseCase) Save(ordination string, customOrder []string
 		return entities.AssetOrdination{}, err
 	}
 
-	if assetOrdination.Ordination != entities.Custom {
-		return s.storageInDatabase(assetOrdination, nil)
+	if assetOrdination.Ordination == entities.Custom {
+		if err := s.saveCustomOrder(assetOrdination); err != nil {
+			return entities.AssetOrdination{}, err
+		}
 	}
 
-	currentAssets, err := s.AssetRepository.GetAll()
-
-	if err != nil {
-		return entities.AssetOrdination{}, err
-	}
-
-	if err = s.validateCustomOrdenation(assetOrdination, currentAssets); err != nil {
-		return entities.AssetOrdination{}, err
-	}
-
-	return s.storageInDatabase(assetOrdination, currentAssets)
+	return s.storageInDatabase(assetOrdination)
 }
 
 type NewSaveAssetOrdinationUseCaseData struct {

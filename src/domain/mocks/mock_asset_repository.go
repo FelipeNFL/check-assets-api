@@ -9,6 +9,7 @@ type MockAssetRepository struct {
 	GetLastPositionFunc    func() (int, error)
 	CheckIfAssetExistsFunc func(code string) (bool, error)
 	GetAllFunc             func() ([]entities.Asset, error)
+	UpdateAssetOrderFunc   func(code string, newOrder int) error
 }
 
 func (m MockAssetRepository) Insert(asset entities.Asset) (entities.Asset, error) {
@@ -25,6 +26,10 @@ func (m MockAssetRepository) CheckIfAssetExists(code string) (bool, error) {
 
 func (m MockAssetRepository) GetAll() ([]entities.Asset, error) {
 	return m.GetAllFunc()
+}
+
+func (m MockAssetRepository) UpdateAssetOrder(code string, newOrder int) error {
+	return m.UpdateAssetOrderFunc(code, newOrder)
 }
 
 type NewMockAssetRepositoryData struct {
@@ -46,6 +51,9 @@ func NewMockAssetRepository(data NewMockAssetRepositoryData) MockAssetRepository
 		},
 		GetAllFunc: func() ([]entities.Asset, error) {
 			return data.AssetList, nil
+		},
+		UpdateAssetOrderFunc: func(code string, newOrder int) error {
+			return nil
 		},
 	}
 }

@@ -55,12 +55,12 @@ func (p HttpAssetInfoProvider) GetInfo(codes []string) (protocols.AssetInfoResul
 
 	assetsInfo := make(map[string]protocols.AssetInfo)
 
-	for _, result := range parsed.QuoteResponse.Result {
-		if result.RegularMarketPrice == 0 {
-			log.Error("Error getting price for asset: ", result.Symbol, ". Asset code is invalid.")
-			return protocols.AssetInfoResult{}, infra.ErrAssetNotFound
-		}
+	if len(parsed.QuoteResponse.Result) == 0 {
+		log.Error("Error getting price for asset list: ", codesJoined, ". Asset code is invalid.")
+		return protocols.AssetInfoResult{}, infra.ErrAssetNotFound
+	}
 
+	for _, result := range parsed.QuoteResponse.Result {
 		assetsInfo[result.Symbol] = protocols.AssetInfo{
 			Price: result.RegularMarketPrice,
 		}

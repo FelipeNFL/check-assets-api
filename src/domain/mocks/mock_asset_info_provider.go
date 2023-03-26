@@ -10,8 +10,8 @@ func (m MockAssetInfoProvider) GetInfo(codes []string) (protocols.AssetInfoResul
 	return m.GetInfoFunc(codes)
 }
 
-func NewMockAssetInfoProvider(price []float64) protocols.AssetInfoProvider {
-	return &MockAssetInfoProvider{
+func NewMockAssetInfoProvider(price []float64, err error) protocols.AssetInfoProvider {
+	return MockAssetInfoProvider{
 		GetInfoFunc: func(codes []string) (protocols.AssetInfoResult, error) {
 			assetInfoResult := make(map[string]protocols.AssetInfo, len(codes))
 
@@ -19,7 +19,7 @@ func NewMockAssetInfoProvider(price []float64) protocols.AssetInfoProvider {
 				assetInfoResult[code] = protocols.AssetInfo{Price: price[i]}
 			}
 
-			return assetInfoResult, nil
+			return assetInfoResult, err
 		},
 	}
 }

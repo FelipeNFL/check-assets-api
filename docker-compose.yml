@@ -6,7 +6,11 @@ services:
     environment:
       - DATABASE_URL=mongodb://db:27017
       - PORT=8080
-      - YAHOO_FINANCE_API_KEY=nFTRr5SlMs1t1SAoX3vy88PvwuohGnyVaXoKU3ll
+      # - YAHOO_FINANCE_API_KEY=nFTRr5SlMs1t1SAoX3vy88PvwuohGnyVaXoKU3ll
+      # - YAHOO_FINANCE_API_KEY=TGH4YXs2sn8NTmKZdRMCJ47Ui8FcWnfQ70MNrSqL
+      # - YAHOO_FINANCE_API_KEY=aW4Oy5qvZV62esIsPKDLUtNMDT31zyj9bMVqmdH4
+      # - YAHOO_FINANCE_API_KEY=avq55aeDz9aHcnyv0A8Z47Jt8MVuwfh1Dlmu4Woh
+      - YAHOO_FINANCE_API_KEY=DY2jdlrcoC7RAgL34k5fV36CUdapxV5R7242QDAM
     ports:
       - "8080:8080"
     volumes:

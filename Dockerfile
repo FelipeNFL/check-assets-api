@@ -7,4 +7,3 @@ COPY . $SRC_PATH
 WORKDIR $SRC_PATH/src
 
 RUN go mod tidy
-

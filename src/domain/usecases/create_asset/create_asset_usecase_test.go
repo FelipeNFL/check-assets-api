@@ -20,7 +20,7 @@ func TestCreateAssetUseCase(t *testing.T) {
 		)
 		createAssetUseCaseData := NewCreateAssetUseCaseData{
 			AssetRepository:   assetRepository,
-			AssetInfoProvider: mocks.NewMockAssetInfoProvider(10.0),
+			AssetInfoProvider: mocks.NewMockAssetInfoProvider([]float64{10.0}, nil),
 		}
 
 		createAssetUseCase := NewCreateAssetUseCase(createAssetUseCaseData)
@@ -38,12 +38,30 @@ func TestCreateAssetUseCase(t *testing.T) {
 			},
 		)
 		createAssetUseCaseData := NewCreateAssetUseCaseData{
-			AssetRepository: assetRepository,
+			AssetRepository:   assetRepository,
+			AssetInfoProvider: mocks.NewMockAssetInfoProvider([]float64{10.0}, nil),
 		}
 
 		createAssetUseCase := NewCreateAssetUseCase(createAssetUseCaseData)
 		_, err := createAssetUseCase.Create("code")
 
 		assert.Equal(t, usecases.ErrAssetAlreadyCreated, err)
+	})
+
+	t.Run("should return an error when asset code is empty", func(t *testing.T) {
+		assetRepository := mocks.NewMockAssetRepository(
+			mocks.NewMockAssetRepositoryData{
+				IsAssetAlreadyInserted: false,
+			},
+		)
+		createAssetUseCaseData := NewCreateAssetUseCaseData{
+			AssetRepository:   assetRepository,
+			AssetInfoProvider: mocks.NewMockAssetInfoProvider([]float64{10.0}, nil),
+		}
+
+		createAssetUseCase := NewCreateAssetUseCase(createAssetUseCaseData)
+		_, err := createAssetUseCase.Create("")
+
+		assert.Equal(t, usecases.ErrAssetCodeIsEmpty, err)
 	})
 }

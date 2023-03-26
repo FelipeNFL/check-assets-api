@@ -3,6 +3,8 @@ package adapters
 import (
 	"io"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Headers map[string]string
@@ -33,6 +35,11 @@ func NewHttpClient() HttpClient {
 
 			body, err := io.ReadAll(res.Body)
 			if err != nil {
+				return []byte{}, err
+			}
+
+			if res.StatusCode != 200 {
+				log.Warn("http client get error", "status", res.StatusCode, "url", url, "headers", headers, "body", string(body))
 				return []byte{}, err
 			}
 

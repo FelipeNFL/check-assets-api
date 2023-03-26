@@ -27,5 +27,9 @@ func NewAssetOrdination(ordination string, customOrder []string) (AssetOrdinatio
 		return AssetOrdination{}, ErrAssetOrdinationInvalid
 	}
 
+	if ordinationParsed == Custom && len(customOrder) == 0 {
+		return AssetOrdination{}, ErrAssetOrdinationInvalid
+	}
+
 	return AssetOrdination{Ordination: ordinationParsed, CustomOrder: customOrder}, nil
 }

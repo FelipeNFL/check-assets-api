@@ -25,6 +25,10 @@ func NewCreateAssetUseCase(data NewCreateAssetUseCaseData) CreateAssetUseCase {
 }
 
 func (c CreateAssetUseCase) validateAsset(code string) error {
+	if code == "" {
+		return usecases.ErrAssetCodeIsEmpty
+	}
+
 	isAssetAlreadyInserted, checkIfAssetExistsError := c.AssetRepository.CheckIfAssetExists(code)
 
 	if checkIfAssetExistsError != nil {
