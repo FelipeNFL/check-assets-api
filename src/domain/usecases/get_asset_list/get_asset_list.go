@@ -3,6 +3,7 @@ package get_asset_list
 import (
 	"log"
 	"sort"
+	"strings"
 
 	"github.com/FelipeNFL/check-assets-api/domain/entities"
 	providers "github.com/FelipeNFL/check-assets-api/domain/protocols"
@@ -43,15 +44,20 @@ func (g GetAssetListUseCase) Get(direction string) ([]entities.Asset, error) {
 		return nil, err
 	}
 
+	assetsCode := make([]string, len(assets))
+
 	for i, asset := range assets {
-		assetInfo, err := g.AssetInfoProvider.GetInfo(asset.Code)
+		assetsCode[i] = asset.Code
+	}
 
-		if err != nil {
-			log.Fatal("Error getting price for asset: ", asset.Code, " - ", err)
-			return nil, err
-		}
+	assetsInfo, err := g.AssetInfoProvider.GetInfo(assetsCode)
+	if err != nil {
+		log.Fatal("Error getting price for asset list: ", strings.Join(assetsCode, ","), " - ", err)
+		return nil, err
+	}
 
-		assets[i].Price = assetInfo.Price
+	for i, asset := range assets {
+		assets[i].Price = assetsInfo[asset.Code].Price
 	}
 
 	assetOrdination, err := g.AssetOrdinationRepository.Get()

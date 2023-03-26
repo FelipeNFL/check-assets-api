@@ -12,13 +12,13 @@ type NewConsultAssetPriceUseCaseData struct {
 }
 
 func (c ConsultAssetPriceUseCase) Get(code string) (float64, error) {
-	assetInfo, err := c.AssetInfoProvider.GetInfo(code)
+	assetInfo, err := c.AssetInfoProvider.GetInfo([]string{code})
 
 	if err != nil {
 		return 0, err
 	}
 
-	return assetInfo.Price, nil
+	return assetInfo[code].Price, nil
 }
 
 func NewConsultAssetPriceUseCase(data NewConsultAssetPriceUseCaseData) ConsultAssetPriceUseCase {

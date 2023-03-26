@@ -35,7 +35,7 @@ func (c CreateAssetUseCase) validateAsset(code string) error {
 		return usecases.ErrAssetAlreadyCreated
 	}
 
-	_, getAssetInfoProviderError := c.AssetInfoProvider.GetInfo(code)
+	_, getAssetInfoProviderError := c.AssetInfoProvider.GetInfo([]string{code})
 
 	if getAssetInfoProviderError != nil {
 		return getAssetInfoProviderError

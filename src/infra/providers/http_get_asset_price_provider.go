@@ -2,6 +2,7 @@ package providers
 
 import (
 	"encoding/json"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -12,13 +13,15 @@ import (
 )
 
 type HttpAssetInfoProvider struct {
-	HttpClient adapters.HttpClient
+	HttpClient  adapters.HttpClient
+	GetInfoFunc func(codes []string) (protocols.AssetInfoResult, error)
 }
 
 type YahooFinanceSchema struct {
 	QuoteResponse struct {
 		Result []struct {
 			RegularMarketPrice float64 `json:"regularMarketPrice"`
+			Symbol             string  `json:"symbol"`
 		} `json:"result"`
 	} `json:"quoteResponse"`
 }
@@ -33,14 +36,16 @@ func NewAssetInfo(data NewAssetInfoData) HttpAssetInfoProvider {
 	}
 }
 
-func (p HttpAssetInfoProvider) GetInfo(code string) (protocols.AssetInfoResult, error) {
-	url := "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=" + code
+func (p HttpAssetInfoProvider) GetInfo(codes []string) (protocols.AssetInfoResult, error) {
+	codesJoined := strings.Join(codes, ",")
+
+	url := "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=" + codesJoined
 	apiKey := commom.GetEnvironmentVariable("YAHOO_FINANCE_API_KEY")
 	headers := map[string]string{"X-API-KEY": apiKey}
 
 	body, err := p.HttpClient.Get(url, headers)
 	if err != nil {
-		log.Error("Error getting price for asset: ", code, " - ", err)
+		log.Error("Error getting price for asset list: ", codesJoined, " - ", err)
 		return protocols.AssetInfoResult{}, infra.ErrGetAssetPrice
 	}
 
@@ -48,14 +53,18 @@ func (p HttpAssetInfoProvider) GetInfo(code string) (protocols.AssetInfoResult, 
 
 	json.Unmarshal(body, &parsed)
 
-	if len(parsed.QuoteResponse.Result) == 0 {
-		log.Error("Error getting price for asset: ", code, ". Asset code is invalid.")
-		return protocols.AssetInfoResult{}, infra.ErrAssetNotFound
+	assetsInfo := make(map[string]protocols.AssetInfo)
+
+	for _, result := range parsed.QuoteResponse.Result {
+		if result.RegularMarketPrice == 0 {
+			log.Error("Error getting price for asset: ", result.Symbol, ". Asset code is invalid.")
+			return protocols.AssetInfoResult{}, infra.ErrAssetNotFound
+		}
+
+		assetsInfo[result.Symbol] = protocols.AssetInfo{
+			Price: result.RegularMarketPrice,
+		}
 	}
 
-	result := protocols.AssetInfoResult{
-		Price: parsed.QuoteResponse.Result[0].RegularMarketPrice,
-	}
-
-	return result, nil
+	return assetsInfo, nil
 }
