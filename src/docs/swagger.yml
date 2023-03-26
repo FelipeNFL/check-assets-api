@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: Check Assets API
+  description: This project uses the clean architecture concepts with Golang and MongoDB to build a API to storage and monitor price's financial assets.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /health:
+    get:
+      summary: Healthcheck
+      description: check if the service is up
+      responses:
+        '200':
+          description: Successful operation
+  /asset:
+    get:
+      summary: Get asset list
+      description: It returns the assets with price ordered according to settings defined. If no ordernation is setted, it sorts by insertion order.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetGet'
+      parameters:
+        - name: order
+          in: query
+          description: It is optional and it works only with price and alphabetical option.
+          required: false
+          schema:
+            type: string
+            default: asc
+            enum: 
+              - asc
+              - desc
+    post:
+      summary: Insert a new asset on database.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetPost'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetResult'          
+        '400':
+          description: invalid asset (empty or not found in Yahoo Finance API)
+          
+  /asset/price:
+    get:
+      summary: Get the price in the market (it doesn't need to exist in database)
+      parameters:
+        - name: code
+          in: query
+          description: Symbol's asset
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetPriceResponse'
+        '400':
+          description: invalid asset (empty or not found in Yahoo Finance API)
+
+  /asset/ordination:
+    post:
+      summary: Change the ordination configuration
+      description: To set the custom order, you need to inform the code asset in custom_order.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetOrdination'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetOrdination'
+        '400':
+          description: the custom_order is invalid.
+  
+components:
+  schemas:
+    AssetGet:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 'META'
+        order:
+          type: integer
+          example: 1
+        price:
+          type: number
+          example: 10.2
+    AssetPost:
+      type: object
+      properties:
+        code:
+          type: string
+          example: META
+    AssetResult:
+      properties:
+        code:
+          type: string
+          example: META
+        order:
+          type: integer
+          example: 1
+    AssetPriceResponse:
+      properties:
+        code:
+          type: string
+          example: META
+        price:
+          type: number
+          example: 10.2
+    AssetOrdination:
+      properties:
+        order:
+          type: string
+          description: ordenation type
+          enum:
+            - alphabetical
+            - price
+            - custom
+        custom_order:
+          type: array
+          items:
+            type: string
+            description: assets to order
+            

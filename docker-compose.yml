@@ -16,6 +16,15 @@ services:
     volumes:
       - .:/go
 
+  docs:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./src/docs:/usr/share/nginx/html/docs
+    environment:
+      - API_URL=docs/swagger.yml
+
   db:
     image: mongo:6.0.5
     ports:
